@@ -95,6 +95,7 @@ app.get('/update_student', (req, res) => {
         res.render('update_student.ejs');
         
 });
+
 app.post('/student_upd', (req, res) => {
     db.tblstudent.update({rollno: req.body.rollno},{
         'student_name': req.body.student_name, 
@@ -105,6 +106,28 @@ app.post('/student_upd', (req, res) => {
     res.render('update_student.ejs');
 });
 
+app.get('/search', (req, res) => {
+    res.render('search.ejs');
+    
+});
+app.post('/search/company', (req, res) => {
+    
+    db.tblcompany.find({ $or: [ {department: req.body.department}, {company_name: req.body.company_name}, {ctc: req.body.ctc} ] }).toArray((err, result) => {
+        if (err) return console.log(err)
+        // renders index.ejs
+        res.render('company_index.ejs', {quotes: result})
+    });
+});
+
+app.post('/search/student', (req, res) => {
+    
+    db.tblstudent.find({ $or: [{student_department: req.body.student_department}, {student_name: req.body.student_name}, {cgpa: req.body.cgpa}] }).toArray((err, result) => {
+        if (err) return console.log(err)
+        // renders index.ejs
+        res.render('index.ejs', {quotes: result})
+    });
+    
+});
 
 app.listen(3000);
 console.log("Server running on port 3000")
